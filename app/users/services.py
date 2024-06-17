@@ -1,7 +1,6 @@
 from fastapi import HTTPException, Response, status
 from app.auth import services as auth_services
 from app.users.models import User
-from app.posts.models import Post
 from sqlalchemy.orm import Session
 import re
 
@@ -69,19 +68,6 @@ def update_user(db: Session, user_id: int, user: User) -> dict:
     db.commit()
     return get_user_dict(db_user_query.first())
 
-
-def partialy_update_user(db: Session, user_id: int, user: User) -> dict:
-    db_patch = db.query(Post).filter(Post.id == user_id).first()
-    if not db_patch:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-        )
-    for key, value in user.dict().items():
-        if value is not None:
-            setattr(db_patch, key, value)
-    db.commit()
-    db.refresh(db_patch)
-    return get_user_dict(db_patch)
 
 
 def delete_user(db: Session, user_id: int) -> Response:

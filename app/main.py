@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.auth.routes import router as auth_router
 from app.likes.routes import router as likes_router
-from app.posts.routes import router as posts_router
 from app.users.routes import router as users_router
 from starlette.responses import RedirectResponse
 
@@ -26,5 +25,4 @@ async def docs_redirect():
 
 app.include_router(auth_router)
 app.include_router(likes_router)
-app.include_router(posts_router)
 app.include_router(users_router)

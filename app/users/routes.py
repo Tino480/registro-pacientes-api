@@ -52,18 +52,6 @@ def update_user(
     return services.update_user(db, user_id, user)
 
 
-@router.patch(
-    "/{user_id}", status_code=status.HTTP_200_OK, response_model=schemas.UserGet
-)
-def update_user_partial(
-    user_id: int,
-    user: schemas.UserUpdate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(auth_services.get_current_user),
-):
-    return services.partialy_update_user(db, user_id, user)
-
-
 @router.delete(
     "/{user_id}",
     status_code=status.HTTP_204_NO_CONTENT,
