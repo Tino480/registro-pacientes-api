@@ -1,24 +1,10 @@
 from fastapi import HTTPException, Response, status
-from app.auth import services as auth_services
-from app.users.models import User
 from sqlalchemy.orm import Session
-import re
 
-
-def verify_password(password: str) -> bool:
-    reg = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$"
-    pat = re.compile(reg)
-    mat = re.search(pat, password)
-    if mat:
-        return True
-    else:
-        return False
-
+from app.users.models import User
 
 def get_user_dict(user: User) -> dict:
     user_dict = user.__dict__
-    user_dict["posts"] = list(map(lambda post: post.__dict__, user.posts))
-    user_dict["liked_posts"] = list(map(lambda like: like.__dict__, user.liked_posts))
     return user_dict
 
 
@@ -41,9 +27,6 @@ def get_user(db: Session, user_id: int) -> dict:
 
 
 def create_user(db: Session, user: User) -> dict:
-    if verify_password(user.password):
-        hashed_password = auth_services.hash(user.password)
-        user.password = hashed_password
         new_user = User(**user.dict())
         try:
             db.add(new_user)
@@ -52,10 +35,6 @@ def create_user(db: Session, user: User) -> dict:
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
         return get_user_dict(new_user)
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Password is not valid"
-        )
 
 
 def update_user(db: Session, user_id: int, user: User) -> dict:

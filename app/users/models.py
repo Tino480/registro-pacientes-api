@@ -1,12 +1,11 @@
-from app.database import Base
-from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql.expression import text
-from sqlalchemy.sql.sqltypes import TIMESTAMP
+import enum
 from datetime import datetime
 
-import enum
-from sqlalchemy import Integer, Enum
+from sqlalchemy import Boolean, Column, Enum, Integer, String
+from sqlalchemy.sql.expression import text
+from sqlalchemy.sql.sqltypes import TIMESTAMP
+
+from app.database import Base 
 
 class kinship(enum.Enum):
     dad = "dad"
@@ -71,24 +70,27 @@ class TypeFamily(enum.Enum):
     desintegrada = "desintegrada"
     otro = "otro"
 
-        
 
-
+class User(Base):
+    __tablename__ = "users"    
+    id = Column(
+        Integer, primary_key=True, index=True, autoincrement=True, nullable=False
+    )
     name = Column(String, unique=True)
     gender = Column(String, nullable=False, unique=True)
-    age = Column(int, unique=True)
+    age = Column(Integer, unique=True)
     date_of_birth = Column(String, unique=True)
     municipality = Column(String, nullable=False, unique=True)
     address = Column(String, nullable=False, unique=True)
-    phone = Column(int, unique=True)
+    phone = Column(Integer, unique=True)
     religion = Column(String, nullable=False, unique=True)
     civil_status = Column(String, unique=True)
     university_degree = Column(Enum(UniversityDegree))  #lleva clase
     registration = Column(String, unique=True)
     tutor = Column(String, unique=True)
-    children = Column(bool, unique=True)
+    children = Column(Boolean, unique=True)
     assitance_psychologist = Column(String, unique=True)
-    emergency_number = Column(int, unique=True)
+    emergency_number = Column(Integer, unique=True)
     kinship = Column(Enum(kinship))            #lleva clase
     note_one = Column(String, nullable=False)
     symptom = Column(Enum(Symptom))           #lleva clase
