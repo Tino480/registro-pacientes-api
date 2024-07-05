@@ -1,7 +1,8 @@
 import enum
 from datetime import datetime
 
-from sqlalchemy import Boolean, Column, Enum, Integer, String
+from sqlalchemy import Boolean, Column, Enum, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 
@@ -76,6 +77,7 @@ class User(Base):
     id = Column(
         Integer, primary_key=True, index=True, autoincrement=True, nullable=False
     )
+    
     name = Column(String, unique=True)
     gender = Column(String, nullable=False, unique=True)
     age = Column(Integer, unique=True)
@@ -88,18 +90,13 @@ class User(Base):
     university_degree = Column(Enum(UniversityDegree))  #lleva clase
     registration = Column(String, unique=True)
     tutor = Column(String, unique=True)
-    children = Column(Boolean, unique=True)
-    assitance_psychologist = Column(String, unique=True)
     emergency_number = Column(Integer, unique=True)
-    kinship = Column(Enum(kinship))            #lleva clase
-    note_one = Column(String, nullable=False)
-    symptom = Column(Enum(Symptom))           #lleva clase
-    type_psychologist = Column(String, nullable=False, unique=True)
-    type_medic = Column(String, nullable=False)
-    accident = Column(String, nullable=False)
-    type_family = Column(Enum(TypeFamily))        #lleva clase
+    kinship = Column(Enum(kinship))            
+    
     diagnostic_print = Column(String, nullable=False)
-    note_two = Column(String, nullable=False)
+    
+
+    consultations = relationship("Consultation", backref="users")
 
 
 
@@ -113,3 +110,30 @@ class User(Base):
         onupdate=datetime.now,
     )
     
+
+
+class Consultation(Base):
+    __tablename__= "consultations"
+    id = Column(
+        Integer, primary_key=True, index=True, autoincrement=True, nullable=False
+    )
+    user_id = Column(Integer, ForeignKey("users.id"))
+    user = relationship("user", backref="consultations")
+    created_at = Column(
+        TIMESTAMP(timezone=True), server_default=text("now()"), nullable=False
+    )
+    update_at = Column(
+        TIMESTAMP(timezone=True),
+        server_default=text("now()"),
+        nullable=False,
+        onupdate=datetime.now,
+    )
+    note_two = Column(String, nullable=False)
+    note_one = Column(String, nullable=False)
+    type_family = Column(Enum(TypeFamily)) 
+    children = Column(Boolean, unique=True)
+    type_medic = Column(String, nullable=False)
+    accident = Column(String, nullable=False)
+    symptom = Column(Enum(Symptom))  
+    assitance_psychologist = Column(String, unique=True)
+    type_psychologist = Column(String, nullable=False, unique=True)
