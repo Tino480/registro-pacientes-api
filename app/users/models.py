@@ -6,7 +6,8 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 
-from app.database import Base 
+from app.database import Base
+
 
 class kinship(enum.Enum):
     dad = "dad"
@@ -14,11 +15,13 @@ class kinship(enum.Enum):
     brother = "brother"
     sister = "sister"
 
+
 class UniversityDegree(enum.Enum):
     DN = "DN"
     ASP = "ASP"
     QTA = "QTA"
     TICS = "TICS"
+
 
 class Symptom(enum.Enum):
     agresividad = "agresividad"
@@ -61,6 +64,7 @@ class Symptom(enum.Enum):
     transtorno_auditivo = "transtorno_auditivo"
     capacidad_de_insigth = "capacidad_de_insigth"
 
+
 class TypeFamily(enum.Enum):
     completa = "completa"
     incompleta = "incompleta"
@@ -73,11 +77,11 @@ class TypeFamily(enum.Enum):
 
 
 class User(Base):
-    __tablename__ = "users"    
+    __tablename__ = "users"
     id = Column(
         Integer, primary_key=True, index=True, autoincrement=True, nullable=False
     )
-    
+
     name = Column(String, unique=True)
     gender = Column(String, nullable=False, unique=True)
     age = Column(Integer, unique=True)
@@ -87,18 +91,15 @@ class User(Base):
     phone = Column(Integer, unique=True)
     religion = Column(String, nullable=False, unique=True)
     civil_status = Column(String, unique=True)
-    university_degree = Column(Enum(UniversityDegree))  #lleva clase
+    university_degree = Column(Enum(UniversityDegree))  # lleva clase
     registration = Column(String, unique=True)
     tutor = Column(String, unique=True)
     emergency_number = Column(Integer, unique=True)
-    kinship = Column(Enum(kinship))            
-    
+    kinship = Column(Enum(kinship))
+
     diagnostic_print = Column(String, nullable=False)
-    
 
-    consultations = relationship("Consultation", backref="users")
-
-
+    consultations = relationship("Consultation", back_populates="user")
 
     created_at = Column(
         TIMESTAMP(timezone=True), server_default=text("now()"), nullable=False
@@ -109,16 +110,15 @@ class User(Base):
         nullable=False,
         onupdate=datetime.now,
     )
-    
 
 
 class Consultation(Base):
-    __tablename__= "consultations"
+    __tablename__ = "consultations"
     id = Column(
         Integer, primary_key=True, index=True, autoincrement=True, nullable=False
     )
     user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("user", backref="consultations")
+    user = relationship("User", back_populates="consultations")
     created_at = Column(
         TIMESTAMP(timezone=True), server_default=text("now()"), nullable=False
     )
@@ -130,10 +130,10 @@ class Consultation(Base):
     )
     note_two = Column(String, nullable=False)
     note_one = Column(String, nullable=False)
-    type_family = Column(Enum(TypeFamily)) 
+    type_family = Column(Enum(TypeFamily))
     children = Column(Boolean, unique=True)
     type_medic = Column(String, nullable=False)
     accident = Column(String, nullable=False)
-    symptom = Column(Enum(Symptom))  
+    symptom = Column(Enum(Symptom))
     assitance_psychologist = Column(String, unique=True)
     type_psychologist = Column(String, nullable=False, unique=True)
