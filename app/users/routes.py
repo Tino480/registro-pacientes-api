@@ -41,7 +41,7 @@ def create_user(
 )
 def update_user(
     user_id: int,
-    user: schemas.UserCreate,
+    user: schemas.UserUpdate,
     db: Session = Depends(get_db),
     
 ):
