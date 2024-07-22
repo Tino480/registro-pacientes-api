@@ -59,3 +59,7 @@ def delete_user(db: Session, user_id: int) -> Response:
     db.delete(db_user)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+
+
