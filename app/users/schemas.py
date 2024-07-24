@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from app.users.models import UniversityDegree, kinship, TypeFamily, symptom
+from app.users.models import UniversityDegree, kinship, TypeFamily, Symptom
 
 class UserBase(BaseModel):
     name: str
@@ -53,17 +53,16 @@ class UserGet(UserBase):
     class Config:
         orm_mode = True
 
-#consultation
-
 
 class ConsultationBase(BaseModel):
+    user_id: int
     note_two: str
     note_one: str
     type_family: TypeFamily 
     children: bool
     type_medic: str
     accident: str
-    symptom: symptom
+    symptom: Symptom
     assitance_psychologist: str
     type_psychologist: str
 
@@ -79,7 +78,7 @@ class ConsultationUpdate(BaseModel):
     children: bool | None = None
     type_medic: str | None = None
     accident: str | None = None
-    symptom: Optional["symptom"] = None
+    symptom: Optional["Symptom"] = None
     assitance_psychologist: str | None = None
     type_psychologist: str | None = None
     
@@ -87,7 +86,7 @@ class ConsultationUpdate(BaseModel):
 
 class ConsultationGet(ConsultationBase):
     id: int
-    updated_at: datetime
+    update_at: datetime
     created_at: datetime
 
     class Config:
