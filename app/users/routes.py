@@ -73,6 +73,15 @@ def read_consultation(consultation_id: int, db: Session = Depends(get_db)):
     return services.get_consultation(db, consultation_id)
 
 
+@router.get(
+    "/{user_id}/consultations/",
+    status_code=status.HTTP_200_OK,
+    response_model=List[schemas.ConsultationGet],
+)
+def read_consultation_by_user(user_id: int, db: Session = Depends(get_db)):
+    return services.get_consultation_by_user(db, user_id)
+
+
 @router.post(
     "/consultations/",
     status_code=status.HTTP_201_CREATED,

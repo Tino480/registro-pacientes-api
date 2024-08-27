@@ -91,6 +91,15 @@ def get_consultation(db: Session, consultation_id: int) -> dict:
     return get_consultation_dict(consultation)
 
 
+def get_consultation_by_user(db: Session, user_id: int) -> list[dict]:
+    consultations = db.query(Consultation).filter(Consultation.user_id == user_id).all()
+    if not consultations:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Consultations not found"
+        )
+    return list(map(get_consultation_dict, consultations))
+
+
 def create_consultation(db: Session, consultation: ConsultationCreate) -> dict:
     new_consultation = Consultation(**consultation.dict())
     try:
